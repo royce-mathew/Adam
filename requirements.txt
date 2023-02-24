@@ -1,4 +1,5 @@
-whisper
+openai-whisper
 numpy
 scipy
 sounddevice
+colorama
