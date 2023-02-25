@@ -1,16 +1,19 @@
 import os
-import whisper
+from faster_whisper import WhisperModel
 import numpy as np
 import sounddevice as sd
 import scipy.io.wavfile as wavfile
 import threading
 from colorama import Fore, Style
 
+# ct2-transformers-converter --model openai/whisper-base.en --output_dir whisper-base.en-ct2 --quantization int16
+
 # SETTINGS
 MODEL = "base" # Model of whisper you want (Affects processing time)
+MODEL_PATH = "whisper-base.en/"
 ENGLISH_ONLY = True # English only model
-ECHO = False # Hear your own voice for debugging
-INPUT_DEVICE = 4 # [4, 4] [Input_ID, Output_ID] You can check this with sd.query_devices()
+ECHO = True # Hear your own voice for debugging
+INPUT_DEVICE = [4, 5] # [4, 4] [Input_ID, Output_ID] You can check this with sd.query_devices()
 FREQ_RANGE = [50, 1000] # Frequency to detect valid sounds
 SAMPLE_RATE = 44100 # Stream device recording frequency
 BLOCK_SIZE = 30 # Block size in milliseconds
@@ -32,7 +35,7 @@ class StreamHandler:
         sd.default.device = INPUT_DEVICE or sd.default.device
 
         print(f"Using Audio Device: {Style.BRIGHT}{Fore.GREEN}{sd.default.device}")
-        self.model = whisper.load_model(f"{MODEL}{'.en' if ENGLISH_ONLY else ''}")
+        self.model = WhisperModel(MODEL_PATH, device="cpu", compute_type="int8")
         print(Style.BRIGHT + Fore.BLUE + "Loaded Model" + Style.RESET_ALL)
 
 
@@ -74,7 +77,11 @@ class StreamHandler:
 
     def process(self):
         if self.file_ready:
-            result = self.model.transcribe("dictate.wav", fp16=False, language="en", task="transcribe")
+            segments, info = self.model.transcribe("dictate.wav")
+            result = "";
+            for s in segments:
+                result = s.text
+            # result = self.model.transcribe("dictate.wav", fp16=False, language="en", task="transcribe")
             print(f"{Style.BRIGHT + Fore.BLUE}Recieved Result:{Style.RESET_ALL} {result}")
             if self.assistant.analyze != None: self.assistant.analyze(result["text"])
             self.file_ready = False

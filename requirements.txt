@@ -1,4 +1,4 @@
-openai-whisper
+git+https://github.com/guillaumekln/faster-whisper.git
 numpy
 scipy
 sounddevice
