@@ -10,7 +10,7 @@ from colorama import Fore, Style
 MODEL = "base" # Model of whisper you want (Affects processing time)
 ENGLISH_ONLY = True # English only model
 ECHO = False # Hear your own voice for debugging
-INPUT_DEVICE = [5, 4]; # [Input_ID, Output_ID] You can check this with sd.query_devices()
+INPUT_DEVICE = 4 # [4, 4] [Input_ID, Output_ID] You can check this with sd.query_devices()
 FREQ_RANGE = [50, 1000] # Frequency to detect valid sounds
 SAMPLE_RATE = 44100 # Stream device recording frequency
 BLOCK_SIZE = 30 # Block size in milliseconds
@@ -25,8 +25,8 @@ class StreamHandler:
             self.assistant = fakeAssistant()
         else: self.assistant = assistant;
         
-        self.running = True;
-        self.padding = 0;
+        self.running = True
+        self.padding = 0
         self.prev_block = self.buffer = np.zeros((0, 1))
         self.file_ready = False
         sd.default.device = INPUT_DEVICE or sd.default.device
@@ -55,7 +55,7 @@ class StreamHandler:
                 if ECHO:
                     def wait_echo():
                         sd.wait()
-                        self.assistant.talking = False;
+                        self.assistant.talking = False
                     
                     self.assistant.talking = True
                     sd.play(self.buffer, SAMPLE_RATE)
@@ -63,7 +63,7 @@ class StreamHandler:
                 
                 wavfile.write("dictate.wav", SAMPLE_RATE, self.buffer)
                 self.buffer = np.zeros((0, 1))
-                self.file_ready = True;
+                self.file_ready = True
             
             elif self.padding < 1 < self.buffer.shape[0] < SAMPLE_RATE:
                 self.buffer = np.zeros((0, 1))
@@ -88,7 +88,7 @@ class StreamHandler:
 
 def main():
     try:
-        handler = StreamHandler();
+        handler = StreamHandler()
         handler.listen()
     except (KeyboardInterrupt, SystemExit): pass
     finally:
@@ -96,4 +96,4 @@ def main():
         print("Exited Program")
 
 if __name__ == "__main__":
-    main();
+    main()

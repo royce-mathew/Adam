@@ -3,3 +3,4 @@ numpy
 scipy
 sounddevice
 colorama
+pyttsx3
