@@ -85,7 +85,7 @@ class StreamHandler:
             for s in segments:
                 result += s.text
             print(f"{Style.BRIGHT + Fore.BLUE}Recieved Result:{Style.RESET_ALL} {result}")
-            if self.assistant.analyze != None: self.assistant.analyze(result["text"])
+            if self.assistant.analyze != None: self.assistant.analyze(result)
             self.file_ready = False
 
 

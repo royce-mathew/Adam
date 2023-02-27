@@ -1,5 +1,5 @@
 from listener import StreamHandler
-import time, os, re
+import os, re
 import pyttsx3
 
 ASSISTANT_NAME = "adam"
@@ -55,14 +55,13 @@ class Assistant:
     def remove_command(self, command_class):
         self.commands.remove(command_class);
 
-def main():
-    try:
-        assistant = Assistant()
-        StreamHandler(assistant).listen()
-    except (KeyboardInterrupt, SystemExit): pass
-    finally:
-        print("Exited")
-        if os.path.exists('dictate.wav'): os.remove('dictate.wav')
+    def start(self):
+        try:
+            self.stream_handler = StreamHandler(self).listen()
+        except (KeyboardInterrupt, SystemExit): pass
+        finally:
+            print("Exited")
+            if os.path.exists('dictate.wav'): os.remove('dictate.wav')
 
 if __name__ == '__main__':
-    main()
+    Assistant().start()

@@ -17,7 +17,7 @@ The faster-whisper [github page](https://github.com/guillaumekln/faster-whisper)
 # TO-DO
 Tasks that still need to be done.
 
-- [ ]  Fix laggy audio input
+- [x]  Fix laggy audio input
 - [ ]   Find synthetic voice synthesizer. 
     - espnet
     - wavenet_vocoder
