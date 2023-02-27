@@ -9,7 +9,7 @@ ASSISTANT_NAME = "adam"
 # If a prompt without input has been initialized
 init_convs =  [ASSISTANT_NAME, "hi", "okay", "ok", "hey"]
 conv_starts = []
-for i, v in enumerate(init_convs):
+for v in init_convs:
     conv_starts.append([v, ASSISTANT_NAME] if v != ASSISTANT_NAME else [ASSISTANT_NAME])
 
 class Assistant:
@@ -57,7 +57,7 @@ class Assistant:
 
     def start(self):
         try:
-            self.stream_handler = StreamHandler(self).listen()
+            self.stream_handler = StreamHandler().listen()
         except (KeyboardInterrupt, SystemExit): pass
         finally:
             print("Exited")
