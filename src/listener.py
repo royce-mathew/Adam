@@ -35,7 +35,7 @@ class StreamHandler:
         self.audio_ready: bool = False
         self.buffer: np.ndarray = NP_ZEROS
         self.prev_block: np.ndarray = NP_ZEROS
-        # self.audio: np.ndarray = NP_ZEROS
+        self.audio: np.ndarray = NP_ZEROS
         sd.default.device = INPUT_DEVICE or sd.default.device # type: ignore
         print(f"Using Audio Device: {Style.BRIGHT}{Fore.GREEN}{sd.default.device}")
         self.model: WhisperModel = WhisperModel(MODEL_PATH, device="cpu", compute_type="int8")
@@ -76,23 +76,23 @@ class StreamHandler:
     def process(self):
         if self.audio_ready:
             # Convert audio to io file
-            import time;
-            init_time = time.time()
+            # import time;
+            # init_time = time.time()
             with sf.SoundFile("dictate.wav", mode="w", samplerate=SAMPLE_RATE, channels=1) as file:
                 file.write(self.audio)
         
             segments, info = self.model.transcribe("dictate.wav", language="en")
             result: str = "".join(x.text for x in segments)
-            print(time.time() - init_time)
+            # print(time.time() - init_time)
             print(f"{Style.BRIGHT}{Fore.BLUE}Recieved Result:{Style.RESET_ALL} {result}")
-            if self.assistant.analyze != None: self.assistant.analyze(result)
+            if self.assistant.analyze is not None: self.assistant.analyze(result)
             self.audio_ready = False
 
 
-    def listen(self):
+    def listen(self) -> None:
         print(Style.BRIGHT + Fore.GREEN + "Listening" + Style.RESET_ALL)
         with sd.InputStream(channels=1, callback=self.callback, blocksize=int(SAMPLE_RATE * BLOCK_SIZE / 1000), samplerate=SAMPLE_RATE):
-                while self.running and self.assistant.running: self.process();
+            while self.running and self.assistant.running: self.process();
 
 def main():
     try:

@@ -12,6 +12,7 @@ conv_starts = []
 for v in init_convs:
     conv_starts.append([v, ASSISTANT_NAME] if v != ASSISTANT_NAME else [ASSISTANT_NAME])
 
+
 class Assistant:
     def __init__(self):
         self.running = True
@@ -19,7 +20,8 @@ class Assistant:
         self.prompted = False
         self.espeak = pyttsx3.init()
         self.espeak.setProperty('rate', 180) # speed of speech (Default is 175, 200 for pyttsx3)
-        self.commands = [];
+        self.classes = []
+        self.commands = {}
 
     def analyze(self, input):  # Decision tree for assistant
         string = "".join(ch for ch in input if ch not in ",.?!'").lower()  # Remove punctuations that Whisper adds
@@ -31,6 +33,15 @@ class Assistant:
         
         # Remove conversational starters from the query
         query = [word for word in query if word not in init_convs] # remake query without AIname prompts
+        # if not self.prompted: return;
+
+
+        query = " ".join(query)
+        for command_regex, command in self.commands.items():
+            print(command_regex, command)
+            if re.search(command_regex, query):
+                command(query)
+                break;
 
         # Search the queried string with regex
         """
@@ -42,26 +53,32 @@ class Assistant:
             end
         """
 
-    def speak(self, text):
+    def speak(self, text: str):
         self.talking = True
         print(f"\n\033[92m{text}\033[0m\n")
         self.espeak.say(text)
         self.espeak.runAndWait()
         self.talking = False
 
-    def add_command(self, command_class):
-        self.commands.append(command_class);
+    def command(self, regex: str):
+        def add_command(function):
+            self.commands[regex] = function
+            def wrapper(*args, **kwargs):
+                return function(*args, **kwargs)
+            return wrapper
+        return add_command
 
-    def remove_command(self, command_class):
-        self.commands.remove(command_class);
+
+    def add_class(self, command_class):
+        self.classes.append(command_class);
+
+    def remove_class(self, command_class):
+        self.classes.remove(command_class);
 
     def start(self):
         try:
-            self.stream_handler = StreamHandler().listen()
+            self.stream_handler = StreamHandler(assistant=self).listen() # type: ignore
         except (KeyboardInterrupt, SystemExit): pass
         finally:
             print("Exited")
             if os.path.exists('dictate.wav'): os.remove('dictate.wav')
-
-if __name__ == '__main__':
-    Assistant().start()
