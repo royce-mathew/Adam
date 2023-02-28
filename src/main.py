@@ -7,6 +7,7 @@ from colorama import Fore, Style
 client = assistant.Assistant();
 
 def main():
+    print("="*20)
     print(f"{Fore.GREEN}Loading Modules{Fore.RESET}")
     for filename in os.listdir("./src/commands"): # Load modules
         if filename.endswith(".py"):
@@ -16,8 +17,8 @@ def main():
                 module.setup(client); # Run setup command
                 print(f"Loaded {Fore.CYAN}{module_name}{Fore.RESET}")
             except Exception as e:
-                print(f"Unable to laod command: {module_name}; Error: {e}")
-                
+                print(f"Unable to load command: {module_name}; Error: {e}")
+    print()
     client.start()
 
 if __name__ == "__main__":

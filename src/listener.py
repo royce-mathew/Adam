@@ -14,8 +14,8 @@ INPUT_DEVICE: Tuple[int, int] = (5, 4) # [Input_ID, Output_ID] You can check thi
 FREQ_RANGE: Tuple[int, int] = (50, 1000) # Frequency to detect valid sounds 
 SAMPLE_RATE: int = 44100 # Stream device recording frequency
 BLOCK_SIZE: int = 30 # Block size in milliseconds
-THRESHOLD: float = 0.08 # Minimum volume threshold to activate listening
-END_BLOCKS: int = 40 # Wait block for Whisper
+THRESHOLD: float = 0.1 # Minimum volume threshold to activate listening
+END_BLOCKS: int = 30 # Wait block for Whisper
 
 
 # CONSTANTS
@@ -42,7 +42,7 @@ class StreamHandler:
         print(Style.BRIGHT + Fore.BLUE + "Loaded Model" + Style.RESET_ALL)
 
 
-    def callback(self, indata: np.ndarray, frames: int, time, status: sd.CallbackFlags):
+    def callback(self, indata: np.ndarray, frames: int, time, status: sd.CallbackFlags) -> None:
         if not any(indata):
             raise Exception(Style.BRIGHT + Fore.RED + "No Input Recieved. Is your 'INPUT_DEVICE' Correct?" + Style.RESET_ALL)
         
