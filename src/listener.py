@@ -5,12 +5,14 @@ import sounddevice as sd
 import soundfile as sf
 from colorama import Fore, Style
 from typing import Optional, Tuple, Callable
+from scipy.io import wavfile
+import io
 
 # SETTINGS
 MODEL_PATH: str = f"whisper-base.en/"
 ENGLISH_ONLY: bool = True # English only model
 ECHO: bool = False # Hear your own voice for debugging
-INPUT_DEVICE: Tuple[int, int] = (5, 4) # [Input_ID, Output_ID] You can check this with sd.query_devices()
+INPUT_DEVICE: Optional[Tuple[int, int]] = None# (4, 4) # [Input_ID, Output_ID] You can check this with sd.query_devices()
 FREQ_RANGE: Tuple[int, int] = (50, 1000) # Frequency to detect valid sounds 
 SAMPLE_RATE: int = 44100 # Stream device recording frequency
 BLOCK_SIZE: int = 30 # Block size in milliseconds
@@ -78,10 +80,13 @@ class StreamHandler:
             # Convert audio to io file
             # import time;
             # init_time = time.time()
-            with sf.SoundFile("dictate.wav", mode="w", samplerate=SAMPLE_RATE, channels=1) as file:
-                file.write(self.audio)
-        
-            segments, info = self.model.transcribe("dictate.wav", language="en")
+
+            bytes_wav = bytes()
+            bytes_io = io.BytesIO(bytes_wav)
+            wavfile.write(bytes_io, rate=SAMPLE_RATE, data=self.audio)
+
+            # print(self.audio)
+            segments, info = self.model.transcribe(bytes_io, language="en", beam_size=3)
             result: str = "".join(x.text for x in segments)
             # print(time.time() - init_time)
             print(f"{Style.BRIGHT}{Fore.BLUE}Recieved Result:{Style.RESET_ALL} {result}")

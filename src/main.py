@@ -17,7 +17,7 @@ def main():
                 module.setup(client); # Run setup command
                 print(f"Loaded {Fore.CYAN}{module_name}{Fore.RESET}")
             except Exception as e:
-                print(f"Unable to load command: {module_name}; Error: {e}")
+                print(f"Unable to load command: {module_name};\t Error: {e}")
     print()
     client.start()
 
