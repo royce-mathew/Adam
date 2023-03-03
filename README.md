@@ -1,5 +1,4 @@
-# Commands
-### Installation
+# Installation
 
 Before running the makefile which automatically runs the setup for you, you need to have **Python** and **pip** already installed to your path.
 
@@ -8,7 +7,12 @@ To Install the Prerequisites for `adam` all you need to do is run the command
 ```
 make setup
 ```
-###  Run
+### Uninstallation
+To remove and clean all packages installed by `adam`, run:
+```
+make clean
+```
+#  Running
 
 Running the `make` command automatically runs the file for you. You need to be in the main directory to run the `make` command
 
@@ -16,11 +20,7 @@ Running the `make` command automatically runs the file for you. You need to be i
 make
 ```
 
-### Uninstallation
-To remove and clean all packages installed by `adam`, run:
-```
-make clean
-```
+
 
 
 ##  Performance compared to openai/whisper
